@@ -1,5 +1,19 @@
 # Simple To-Do List Manager
 
+import json
+import os
+
+def load_task():
+    if os.path.exists("Tasks.json"):
+        with open ("Tasks.json","r") as file:
+            return json.load(file)
+        
+    return[]                        # returns empty list if no Tasks.json exists 
+
+def save_task(tasks):
+    with open ("Tasks.json","w") as file:
+        json.dump(tasks,file,indent=2)
+
 def show_menu():
     print("\n--- To-Do List Manager ---")
     print("1. View Tasks")
@@ -18,6 +32,7 @@ def view_tasks(tasks):
 def add_task(tasks):
     task = input("Enter new task: ")
     tasks.append(task)
+    save_task(tasks)
     print(f"✅ '{task}' added successfully!")
 
 def delete_task(tasks):
@@ -26,12 +41,13 @@ def delete_task(tasks):
         try:
             task_num = int(input("Enter task number to delete: "))
             removed = tasks.pop(task_num - 1)
+            save_task(tasks)
             print(f"❌ '{removed}' removed successfully!")
         except (ValueError, IndexError):
             print("Invalid task number.")
 
 def main():
-    tasks = []
+    tasks = load_task()
     while True:
         show_menu()
         choice = input("Choose an option: ")
